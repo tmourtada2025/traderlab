@@ -1,13 +1,26 @@
-# TraderLab — Static Site
+# TraderLab — Bilingual Static Site (AR / EN)
 
-Live forex education website. Static export, no database, no server. WhatsApp-based enrollment.
+Live forex education website. Static, no database, WhatsApp-based enrollment. Available in Arabic (default) and English.
 
 ## Stack
 
-- Next.js 14 (static export)
-- Tailwind CSS
+- Next.js 14 (App Router)
+- Tailwind CSS with RTL/LTR variants
 - TypeScript
-- Deploys to: Vercel, GitHub Pages, Cloudflare Pages, Netlify — anywhere
+- Deploys to Vercel
+
+## URL structure
+
+| URL | Language |
+|---|---|
+| `/` | Arabic (default) |
+| `/about` | Arabic about page |
+| `/courses/basic-forex-fundamentals` | Arabic course detail |
+| `/en` | English homepage |
+| `/en/about` | English about |
+| `/en/courses/basic-forex-fundamentals` | English course detail |
+
+The `/` → `/ar` mapping is handled internally via `next.config.js` rewrites. URLs stay clean.
 
 ## Setup
 
@@ -16,131 +29,77 @@ npm install
 npm run dev
 ```
 
-Visit `http://localhost:3000`.
+Visit `http://localhost:3000` for Arabic, `http://localhost:3000/en` for English.
 
-## Build
+## Build & deploy
 
 ```bash
 npm run build
 ```
 
-Outputs a fully static site to `./out`. This folder is what you deploy.
-
-## Deploy
-
-### Option A — Vercel (recommended)
-
-1. `git init && git add . && git commit -m "init"`
-2. Push to GitHub
-3. Import repo at [vercel.com/new](https://vercel.com/new)
-4. No env vars needed
-5. Deploy
-
-Auto-deploys on every push.
-
-### Option B — GitHub Pages
-
-1. Push repo to GitHub
-2. Add a workflow at `.github/workflows/deploy.yml`:
-
-```yaml
-name: Deploy
-on:
-  push:
-    branches: [main]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20 }
-      - run: npm ci
-      - run: npm run build
-      - uses: actions/upload-pages-artifact@v3
-        with: { path: ./out }
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions: { pages: write, id-token: write }
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
-```
-
-3. Repo Settings → Pages → Source: GitHub Actions
-
-### Option C — Cloudflare Pages
-
-1. Connect repo at Cloudflare Pages
-2. Build command: `npm run build`
-3. Output directory: `out`
+Push to GitHub. Vercel auto-deploys.
 
 ## Editing content
 
-All content is in two TypeScript files. Edit, commit, deploy — site updates.
+### Arabic translations to review
 
-### `lib/site.ts`
+I generated the Arabic translations. Before launch, review these files:
 
-Site-wide config:
-- WhatsApp number (`whatsappNumber` — change here, updates every CTA)
-- Location address
-- Schedule
-- General inquiry message
+1. **`lib/dictionaries.ts`** — all UI/marketing copy (hero, navigation, CTAs, About page)
+2. **`lib/courses.ts`** — all 4 course descriptions, taglines, curriculum bullets
 
-### `lib/courses.ts`
+Things to check specifically:
+- Trading vocabulary: "leverage" → "الرافعة المالية", "spread" → "فروق الأسعار", "stop loss" → "وقف الخسارة"
+- Tone for Lebanese/Gulf audience (vs. North African Arabic)
+- Course titles — these appear in WhatsApp messages, should sound natural when spoken
+- The italic emphasis lines in headings ("structure", "on purpose") — Arabic doesn't use italics, so these now display as light-weight contrast instead
 
-All four courses live here as a single array. To edit any course, change the relevant field. To add a new course, append a new object with the same shape.
+### Changing copy
 
-Each course has:
-- `slug` (URL path: `/courses/<slug>`)
-- `title`, `tagline`, `description`
-- `curriculum` (array of strings)
-- `priceUsd`, optional `priceNote`
-- `duration`, `prerequisites`
+- Site config (phone, schedule): `lib/site.ts`
+- All UI/marketing strings: `lib/dictionaries.ts` (both `ar` and `en` blocks)
+- Course content: `lib/courses.ts` (each course has `en` and `ar` fields)
 
-### Pages with manually-written copy
-
-- `app/page.tsx` — homepage (hero copy, marquee, "how enrollment works" steps, CTA)
-- `app/about/page.tsx` — about page (mission, principles)
+Edit, commit, push. Vercel auto-deploys in ~60 seconds.
 
 ## How enrollment works
 
-This is a **brochure site**, not a booking system. The flow:
+Brochure site, not a booking system:
 
-1. User visits the site, picks a course
-2. Clicks "Reserve via WhatsApp" — opens WhatsApp with a pre-filled message
+1. User picks a course
+2. Clicks "Reserve via WhatsApp" — opens WhatsApp with localized pre-filled message
 3. You receive the message, confirm seat, send Whish payment link
-4. User pays, you confirm seat in your own tracking (Google Sheet, notebook, whatever works)
+4. User pays, you confirm seat in your own tracking
 
-Seat counter is **not enforced by the site**. You manage it manually. With cohorts of 20 and one cohort at a time, this is the right level of complexity.
-
-## When to upgrade
-
-If/when this happens, add the booking layer back:
-- Bookings exceed ~30/month and manual tracking becomes painful
-- You want real-time "seats remaining" displayed on the site
-- Two cohorts run concurrently and you need to track them separately
-- You want automated payment-link delivery
-
-The current code structure makes this easy: course data moves from `lib/courses.ts` to a database, CTAs change from `wa.me` links to a form-and-API. Component layouts stay the same.
+Seat counter is not on the site. WhatsApp messages are localized to match what language the user was browsing.
 
 ## Project structure
 
 ```
 app/
-  page.tsx                 — homepage
-  about/page.tsx           — about page
-  courses/[slug]/page.tsx  — generates 4 static course pages
-  layout.tsx, globals.css
+  [locale]/
+    page.tsx                 — homepage (AR + EN)
+    about/page.tsx           — about page
+    courses/[slug]/page.tsx  — generates 4 × 2 = 8 static course pages
+    layout.tsx               — sets html lang/dir, renders Header/Footer
+  layout.tsx                 — minimal root layout
+  globals.css
 
 components/
   Header.tsx, Footer.tsx, CourseCard.tsx
+  LocaleSwitcher.tsx         — AR/EN toggle in header
 
 lib/
-  site.ts                  — site-wide config (WhatsApp, location, etc.)
-  courses.ts               — all course content
+  i18n.ts                    — locale config and helpers
+  dictionaries.ts            — all UI/marketing strings (ar + en)
+  courses.ts                 — bilingual course content
+  site.ts                    — phone, location, scheduleShort
 ```
+
+## RTL handling
+
+- `[dir="rtl"]` is set on `<html>` for Arabic
+- Tailwind's `rtl:` variant flips properties as needed (`rtl:md:text-left`, etc.)
+- Arrow icons use `.icon-arrow-flip` class which mirrors them via CSS scaleX(-1)
+- Marquee animates in opposite direction in RTL
+- Pricing keeps Western numerals (`350`, not `٣٥٠`) — `.numeric` class forces Latin font
