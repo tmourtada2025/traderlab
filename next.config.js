@@ -2,17 +2,13 @@
 const nextConfig = {
   reactStrictMode: true,
 
-  // Rewrites map user-facing paths to internal locale routes.
-  // Order: more specific first.
   async rewrites() {
     return {
       beforeFiles: [
-        // / → /ar (Arabic homepage at root)
+        // Arabic default — bare paths map to /ar/...
         { source: "/", destination: "/ar" },
-        // /about → /ar/about
         { source: "/about", destination: "/ar/about" },
-        // /courses/:slug → /ar/courses/:slug
-        { source: "/courses/:slug", destination: "/ar/courses/:slug" },
+        { source: "/the-program", destination: "/ar/the-program" },
       ],
     };
   },

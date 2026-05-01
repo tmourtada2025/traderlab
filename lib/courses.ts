@@ -1,203 +1,211 @@
-// All course content. Every text field is bilingual: { en, ar }.
-// To add a new course, append a new object with both languages filled.
-// Edit Arabic copy here for fixes; rebuild auto-deploys.
+// Single program data. Replaces the previous multi-course array.
+// 4 weeks × 3 sessions/week = 12 sessions.
 
 import type { Locale } from "./i18n";
 
-export type CourseLevel = "basic" | "intermediate" | "advanced" | "psychology";
-
 type Bi = { en: string; ar: string };
 
-export type Course = {
-  slug: string;
-  level: CourseLevel;
-  levelLabel: Bi;
+export type SessionCategory = "foundations" | "technical" | "institutional" | "integration";
+
+export type Session = {
+  num: number;
   title: Bi;
-  tagline: Bi;
   description: Bi;
-  curriculum: { en: string[]; ar: string[] };
-  duration: Bi;
-  durationShort: Bi;
-  priceUsd: number;
-  priceNote?: Bi;
-  prerequisites: Bi;
+  primary: SessionCategory;          // top border color + first tag
+  tags: SessionCategory[];           // displayed pill tags (excluding "psychology" which is its own tag)
+  hasPsychology?: boolean;           // shows additional "psychology" tag
 };
 
-export const COURSES: Course[] = [
+export type Week = {
+  num: number;
+  label: Bi;
+  sessions: Session[];
+};
+
+export const PROGRAM = {
+  title: { en: "Comprehensive Forex Program", ar: "البرنامج الشامل لتداول الفوركس" },
+  tagline: {
+    en: "From market literacy to a working trading system — in four focused weeks.",
+    ar: "من فهم السوق إلى نظام تداول فعّال — في أربعة أسابيع مكثّفة.",
+  },
+  description: {
+    en: "A four-week, 24-hour live program built for traders who want depth without filler. We combine foundations, technical analysis, institutional thinking and trader psychology into a single system you can actually run. Twelve sessions, three per week, capped at twenty seats.",
+    ar: "برنامج حضوري لمدة أربعة أسابيع و24 ساعة، مصمَّم للمتداولين الذين يبحثون عن العمق دون حشو. ندمج الأساسيات والتحليل الفنّي والتفكير المؤسّسي وعلم نفس المتداول في نظام واحد يمكنك تطبيقه فعلياً. اثنتا عشرة جلسة، ثلاث أسبوعياً، بحد أقصى عشرون مقعداً.",
+  },
+  duration: { en: "4 weeks · 12 sessions · 24 hours", ar: "4 أسابيع · 12 جلسة · 24 ساعة" },
+  durationShort: { en: "4 weeks", ar: "4 أسابيع" },
+  priceUsd: 500,
+  priceNote: {
+    en: "$100 of your enrollment fee is allocated to your live trading account upon completion.",
+    ar: "يُخصَّص 100 دولار من رسوم التسجيل لحسابك التداولي الحقيقي عند إتمام البرنامج.",
+  },
+  prerequisites: {
+    en: "None. Designed to take a complete beginner to a system-level trader in four weeks.",
+    ar: "لا متطلّبات. مصمَّم ليأخذ المبتدئ تماماً إلى مستوى متداول يعمل بنظام في أربعة أسابيع.",
+  },
+};
+
+export const WEEKS: Week[] = [
   {
-    slug: "basic-forex-fundamentals",
-    level: "basic",
-    levelLabel: { en: "01 / Foundation", ar: "01 / الأساس" },
-    title: { en: "Basic Forex Fundamentals", ar: "أساسيات الفوركس" },
-    tagline: {
-      en: "Build a real foundation before you risk a single dollar.",
-      ar: "ابنِ أساساً متيناً قبل أن تخاطر بأي دولار.",
-    },
-    description: {
-      en: "A two-week immersion designed for complete beginners. You will learn how the forex market actually works — the mechanics, the language, the instruments — and finish the course able to read a chart, place an order, and evaluate a broker with confidence. Twelve hours of live, in-class instruction with hands-on MT4/MT5 demonstrations.",
-      ar: "دورة مكثّفة لمدة أسبوعين مصمّمة للمبتدئين تماماً. ستتعلّم كيف يعمل سوق الفوركس فعلياً — الميكانيكا، المصطلحات، الأدوات — وستنهي الدورة قادراً على قراءة الرسم البياني، وتنفيذ الأوامر، وتقييم الوسيط بثقة. اثنا عشر ساعة من التعليم الحضوري المباشر مع شروحات تطبيقية على MT4/MT5.",
-    },
-    curriculum: {
-      en: [
-        "Market mechanics: bid/ask spreads, pips, pip value, lots, leverage, margin",
-        "Order types: market, limit, stop, stop-loss, take-profit",
-        "Technical vs. fundamental analysis — when to use each",
-        "Currency drivers: GDP, interest rates, CPI, PPI, central bank policy",
-        "Asset class overview: forex pairs, CFDs, commodities, crypto, indices",
-        "How to evaluate and select a broker",
-        "Structural advantages of trading forex",
-        "Live MT4/MT5 platform walkthroughs",
-      ],
-      ar: [
-        "ميكانيكا السوق: فروق الأسعار (Bid/Ask)، النقاط (Pips)، قيمة النقطة، اللوتات، الرافعة المالية، الهامش",
-        "أنواع الأوامر: السوق، المحدّد، الإيقاف، وقف الخسارة، جني الأرباح",
-        "التحليل الفنّي مقابل التحليل الأساسي — متى تستخدم كلاً منهما",
-        "محرّكات العملات: الناتج المحلي، أسعار الفائدة، مؤشّر أسعار المستهلك، مؤشّر أسعار المنتج، سياسات البنوك المركزية",
-        "نظرة عامة على فئات الأصول: أزواج الفوركس، عقود الفروقات، السلع، العملات الرقمية، المؤشّرات",
-        "كيفية تقييم الوسيط واختياره",
-        "الميزات البنيوية لتداول الفوركس",
-        "شروحات مباشرة على منصّتي MT4 وMT5",
-      ],
-    },
-    duration: { en: "2 weeks · 6 sessions · 12 hours", ar: "أسبوعان · 6 جلسات · 12 ساعة" },
-    durationShort: { en: "2 weeks", ar: "أسبوعان" },
-    priceUsd: 350,
-    priceNote: {
-      en: "$100 of your enrollment fee is allocated to your live trading account upon completion.",
-      ar: "يُخصَّص 100 دولار من رسوم التسجيل لحسابك التداولي الحقيقي عند إتمام الدورة.",
-    },
-    prerequisites: { en: "None — designed for absolute beginners.", ar: "لا متطلّبات — مصمّمة للمبتدئين تماماً." },
+    num: 1,
+    label: { en: "Market literacy & trader identity", ar: "فهم السوق وهوية المتداول" },
+    sessions: [
+      {
+        num: 1,
+        primary: "foundations",
+        tags: ["foundations"],
+        hasPsychology: true,
+        title: {
+          en: "The market, the money & the mindset",
+          ar: "السوق، المال، والعقلية",
+        },
+        description: {
+          en: "How forex works, who the real players are, why retail traders lose — and what this program will and won't do for you. Psychology intro: the trader's paradox.",
+          ar: "كيف يعمل الفوركس، من هم اللاعبون الحقيقيون، لماذا يخسر المتداول الفردي — وما الذي سيقدّمه ولن يقدّمه هذا البرنامج. مقدّمة في علم النفس: مفارقة المتداول.",
+        },
+      },
+      {
+        num: 2,
+        primary: "foundations",
+        tags: ["foundations"],
+        title: { en: "The language of price", ar: "لغة السعر" },
+        description: {
+          en: "Pairs, pips, lots, leverage, margin, bid/ask, spread. Every mechanical concept needed to place and size a trade correctly. Live MT4 exercises.",
+          ar: "أزواج العملات، النقاط (Pips)، اللوتات، الرافعة المالية، الهامش، فروق الأسعار (Bid/Ask، الـ Spread). كل مفهوم ميكانيكي تحتاجه لتنفيذ الصفقة وتحديد حجمها بشكل صحيح. تمارين مباشرة على MT4.",
+        },
+      },
+      {
+        num: 3,
+        primary: "foundations",
+        tags: ["foundations"],
+        hasPsychology: true,
+        title: { en: "Execution & risk mechanics", ar: "التنفيذ وآليات إدارة المخاطر" },
+        description: {
+          en: "Order types, SL/TP, margin call mechanics, position sizing formula. Psychology: why traders don't set stop losses — and what that reveals.",
+          ar: "أنواع الأوامر، وقف الخسارة وجني الأرباح، آلية الـ Margin Call، معادلة تحديد حجم المركز. علم النفس: لماذا لا يضع المتداولون وقف الخسارة — وما الذي يكشفه ذلك.",
+        },
+      },
+    ],
   },
   {
-    slug: "intermediate-technical-analysis",
-    level: "intermediate",
-    levelLabel: { en: "02 / Analysis", ar: "02 / التحليل" },
-    title: { en: "Intermediate Technical Analysis", ar: "التحليل الفنّي المتوسّط" },
-    tagline: { en: "Read price action like a professional.", ar: "اقرأ حركة السعر كمحترف." },
-    description: {
-      en: "A two-week course for traders who already understand the basics and want to identify high-probability trading opportunities. You will learn to map market structure, interpret candlestick behavior, and confirm setups with momentum tools — building the analytical core every serious trader needs.",
-      ar: "دورة لمدة أسبوعين للمتداولين الذين يتقنون الأساسيات ويريدون تحديد فرص تداول ذات احتمالية عالية. ستتعلّم رسم بنية السوق، وتفسير سلوك الشموع اليابانية، وتأكيد الإعدادات بأدوات الزخم — لبناء الأساس التحليلي الذي يحتاجه كل متداول جدّي.",
-    },
-    curriculum: {
-      en: [
-        "Market structure: uptrends, downtrends, consolidation phases",
-        "Trend lines, moving averages, Bollinger Bands, pivot points",
-        "Multi-timeframe confluence and how to apply it",
-        "Japanese candlestick patterns and classic chart formations",
-        "Momentum and trend indicators: MACD, RSI, Stochastic oscillator",
-        "Combining structure with quantitative confirmation",
-      ],
-      ar: [
-        "بنية السوق: الاتّجاه الصاعد، الاتّجاه الهابط، مراحل التماسك",
-        "خطوط الاتّجاه، المتوسّطات المتحرّكة، نطاقات بولينجر، نقاط البيفوت",
-        "تطابق الإطارات الزمنية المتعدّدة وكيفية تطبيقه",
-        "أنماط الشموع اليابانية والتشكيلات الكلاسيكية للرسم البياني",
-        "مؤشّرات الزخم والاتّجاه: MACD، RSI، مذبذب Stochastic",
-        "دمج بنية السوق مع التأكيد الكمّي",
-      ],
-    },
-    duration: { en: "2 weeks · 6 sessions · 12 hours", ar: "أسبوعان · 6 جلسات · 12 ساعة" },
-    durationShort: { en: "2 weeks", ar: "أسبوعان" },
-    priceUsd: 250,
-    prerequisites: {
-      en: "Basic Forex Fundamentals or equivalent foundational knowledge.",
-      ar: "دورة أساسيات الفوركس أو ما يعادلها من معرفة أساسية.",
-    },
+    num: 2,
+    label: { en: "Reading the market", ar: "قراءة السوق" },
+    sessions: [
+      {
+        num: 4,
+        primary: "technical",
+        tags: ["technical", "institutional"],
+        title: { en: "Price structure & market context", ar: "بنية السعر وسياق السوق" },
+        description: {
+          en: "Candlesticks, market structure (HH/HL/LH/LL), support & resistance zones, trend identification. The chart as a record of institutional behavior.",
+          ar: "الشموع اليابانية، بنية السوق (قمم وقيعان أعلى/أدنى)، مناطق الدعم والمقاومة، تحديد الاتّجاه. الرسم البياني كسجل لسلوك المؤسّسات.",
+        },
+      },
+      {
+        num: 5,
+        primary: "technical",
+        tags: ["technical"],
+        title: { en: "Technical tools that actually work", ar: "الأدوات الفنّية التي تنجح فعلاً" },
+        description: {
+          en: "Moving averages, Bollinger Bands, pivot points, MACD, RSI — taught as confirmation tools, not signal generators. Timeframe confluence framework.",
+          ar: "المتوسّطات المتحرّكة، نطاقات بولينجر، نقاط البيفوت، MACD، RSI — تُدرَّس كأدوات تأكيد، لا كمولّدات إشارات. إطار تطابق الإطارات الزمنية.",
+        },
+      },
+      {
+        num: 6,
+        primary: "technical",
+        tags: ["technical", "foundations"],
+        title: {
+          en: "Fundamental drivers & the economic calendar",
+          ar: "المحرّكات الأساسية والروزنامة الاقتصادية",
+        },
+        description: {
+          en: "Central banks, interest rates, CPI/PPI/GDP, hawkish vs dovish. Weekly calendar review process. Fundamentals as directional filter for technical entries.",
+          ar: "البنوك المركزية، أسعار الفائدة، مؤشّرات CPI/PPI/GDP، السياسات المتشدّدة مقابل المتساهلة. عملية مراجعة الروزنامة الأسبوعية. التحليل الأساسي كمرشّح اتّجاهي للدخول الفنّي.",
+        },
+      },
+    ],
   },
   {
-    slug: "advanced-technical-analysis",
-    level: "advanced",
-    levelLabel: { en: "03 / Strategy", ar: "03 / الاستراتيجية" },
-    title: {
-      en: "Advanced Technical Analysis & Strategy Building",
-      ar: "التحليل الفنّي المتقدّم وبناء الاستراتيجية",
+    num: 3,
+    label: {
+      en: "Institutional thinking & advanced structure",
+      ar: "التفكير المؤسّسي والبنية المتقدّمة",
     },
-    tagline: {
-      en: "From analysis to a system you can actually trade.",
-      ar: "من التحليل إلى نظام تداول قابل للتطبيق فعلياً.",
-    },
-    description: {
-      en: "A two-week course for traders ready to move from reading charts to building a complete, repeatable trading system. You will work with sophisticated analytical techniques and finish the course with a documented strategy and a journal framework for measuring its performance.",
-      ar: "دورة لمدة أسبوعين للمتداولين الجاهزين للانتقال من قراءة الرسوم البيانية إلى بناء نظام تداول كامل وقابل للتكرار. ستعمل بتقنيات تحليلية متطوّرة وتنهي الدورة باستراتيجية موثّقة وإطار يومية لقياس أدائها.",
-    },
-    curriculum: {
-      en: [
-        "Fibonacci retracements and extensions; premium and discount zones",
-        "Introduction to Elliott Wave theory",
-        "Volume-based indicators: OBV, Accumulation/Distribution",
-        "Average Directional Index (ADX) and custom indicators",
-        "Ichimoku Kinko Hyo cloud analysis",
-        "Heikin-Ashi candlesticks, fractals, Williams Alligator",
-        "Workshop: building and stress-testing a complete trading strategy",
-        "Trading journal framework and performance review",
-      ],
-      ar: [
-        "تصحيحات وامتدادات فيبوناتشي؛ مناطق البريميوم والديسكاونت",
-        "مقدّمة في نظرية موجات إليوت",
-        "مؤشّرات الحجم: OBV، التراكم/التوزيع",
-        "مؤشّر متوسّط الحركة الاتّجاهية (ADX) والمؤشّرات المخصّصة",
-        "تحليل سحابة Ichimoku Kinko Hyo",
-        "شموع Heikin-Ashi، الـ Fractals، مؤشّر Williams Alligator",
-        "ورشة: بناء استراتيجية تداول كاملة واختبار صلابتها",
-        "إطار يومية التداول ومراجعة الأداء",
-      ],
-    },
-    duration: { en: "2 weeks · 6 sessions · 12 hours", ar: "أسبوعان · 6 جلسات · 12 ساعة" },
-    durationShort: { en: "2 weeks", ar: "أسبوعان" },
-    priceUsd: 250,
-    prerequisites: {
-      en: "Intermediate Technical Analysis or equivalent.",
-      ar: "دورة التحليل الفنّي المتوسّط أو ما يعادلها.",
-    },
+    sessions: [
+      {
+        num: 7,
+        primary: "institutional",
+        tags: ["institutional"],
+        title: { en: "How institutions move price", ar: "كيف تحرّك المؤسّسات السعر" },
+        description: {
+          en: "Supply & demand zones, order blocks, fair value gaps. Why price does what it does at key levels. The difference between retail and institutional analysis.",
+          ar: "مناطق العرض والطلب، Order Blocks، Fair Value Gaps. لماذا يتصرّف السعر كما يتصرّف عند المستويات الرئيسية. الفرق بين التحليل الفردي والتحليل المؤسّسي.",
+        },
+      },
+      {
+        num: 8,
+        primary: "institutional",
+        tags: ["institutional", "technical"],
+        title: { en: "Market structure at depth", ar: "بنية السوق بعمق" },
+        description: {
+          en: "Break of structure, change of character, liquidity sweeps, Fibonacci premium/discount zones. Multi-timeframe confluence: D1 → H4 → H1 drill.",
+          ar: "كسر البنية (BoS)، تغيّر الطابع (ChoCH)، اجتياح السيولة، مناطق فيبوناتشي للبريميوم والديسكاونت. تطابق الإطارات الزمنية: من اليومي إلى الـ H4 إلى الـ H1.",
+        },
+      },
+      {
+        num: 9,
+        primary: "institutional",
+        tags: ["institutional"],
+        hasPsychology: true,
+        title: { en: "Trader psychology: the real edge", ar: "علم نفس المتداول: الميزة الحقيقية" },
+        description: {
+          en: "Loss aversion, revenge trading, FOMO, breakeven syndrome, position sizing anxiety. Nervous system responses in live trading. Building a decision protocol.",
+          ar: "النفور من الخسارة، تداول الانتقام، الـ FOMO، متلازمة نقطة التعادل، قلق تحديد حجم المركز. استجابات الجهاز العصبي في التداول الحي. بناء بروتوكول قرار.",
+        },
+      },
+    ],
   },
   {
-    slug: "trader-psychology",
-    level: "psychology",
-    levelLabel: { en: "04 / Mind", ar: "04 / العقل" },
-    title: { en: "Trader Psychology", ar: "علم نفس المتداول" },
-    tagline: {
-      en: "The edge is rarely in the chart. It is in the operator.",
-      ar: "الميزة نادراً ما تكون في الرسم البياني. هي في المُشغِّل.",
-    },
-    description: {
-      en: "An intensive one-week course addressing the psychological barriers that prevent consistent profitability. You will examine the behaviors that produce losing trades — fear, greed, revenge trading, FOMO — and learn frameworks for building the discipline serious trading requires.",
-      ar: "دورة مكثّفة لمدة أسبوع تتناول الحواجز النفسية التي تمنع الربحية المستمرّة. ستفحص السلوكيات التي تنتج الصفقات الخاسرة — الخوف، الجشع، تداول الانتقام، الـ FOMO — وستتعلّم أُطراً لبناء الانضباط الذي يتطلّبه التداول الجدّي.",
-    },
-    curriculum: {
-      en: [
-        "The psychology of losing: greed, fear, revenge trading, FOMO",
-        "Recognizing emotional triggers and nervous system responses",
-        "Position sizing anxiety and breakeven syndrome",
-        "Frameworks for building psychological resilience",
-        "Discipline systems and pre-trade routines",
-        "Long-term mindset for compounding performance",
-      ],
-      ar: [
-        "علم نفس الخسارة: الجشع، الخوف، تداول الانتقام، الـ FOMO",
-        "التعرّف على المحفّزات العاطفية واستجابات الجهاز العصبي",
-        "قلق تحديد حجم المركز ومتلازمة نقطة التعادل",
-        "أُطر لبناء المرونة النفسية",
-        "أنظمة الانضباط وروتينات ما قبل الصفقة",
-        "العقلية بعيدة المدى لأداء تراكمي",
-      ],
-    },
-    duration: { en: "1 week · 3 sessions · 6 hours", ar: "أسبوع · 3 جلسات · 6 ساعات" },
-    durationShort: { en: "1 week", ar: "أسبوع" },
-    priceUsd: 150,
-    prerequisites: {
-      en: "Open to all levels — recommended after at least one technical course.",
-      ar: "مفتوحة لجميع المستويات — يُنصح بأخذها بعد دورة فنّية واحدة على الأقل.",
-    },
+    num: 4,
+    label: { en: "System, execution & the live trader", ar: "النظام والتنفيذ والمتداول الحي" },
+    sessions: [
+      {
+        num: 10,
+        primary: "integration",
+        tags: ["integration", "technical"],
+        title: { en: "Building your trading system", ar: "بناء نظام التداول الخاص بك" },
+        description: {
+          en: "Combining fundamental direction + technical entry + institutional context into a repeatable process. Entry criteria, invalidation rules, trade management. Chart pattern workshop.",
+          ar: "دمج الاتّجاه الأساسي + الدخول الفنّي + السياق المؤسّسي في عملية قابلة للتكرار. معايير الدخول، قواعد الإلغاء، إدارة الصفقة. ورشة أنماط الرسم البياني.",
+        },
+      },
+      {
+        num: 11,
+        primary: "integration",
+        tags: ["integration"],
+        hasPsychology: true,
+        title: { en: "Risk, journaling & performance", ar: "المخاطر، اليومية، والأداء" },
+        description: {
+          en: "Expectancy formula, position sizing across account sizes, trade journal framework, performance review process. Broker selection & vetting live exercise.",
+          ar: "معادلة التوقّع، تحديد حجم المركز عبر أحجام الحسابات، إطار يومية التداول، عملية مراجعة الأداء. اختيار الوسيط وتقييمه — تمرين مباشر.",
+        },
+      },
+      {
+        num: 12,
+        primary: "integration",
+        tags: ["integration"],
+        hasPsychology: true,
+        title: { en: "Live trade review & graduation", ar: "مراجعة الصفقات والتخرّج" },
+        description: {
+          en: "Students present one demo trade analysis. Group feedback. The three gates to live trading. Course close and continuing-education roadmap.",
+          ar: "يقدّم الطلّاب تحليل صفقة تجريبية واحدة. ملاحظات جماعية. البوابات الثلاث للتداول الحقيقي. ختام البرنامج وخارطة التطوير المستمر.",
+        },
+      },
+    ],
   },
 ];
 
-export function getCourseBySlug(slug: string): Course | undefined {
-  return COURSES.find((c) => c.slug === slug);
-}
-
 export function pick(value: { en: string; ar: string }, locale: Locale): string {
-  return value[locale];
-}
-export function pickArr(value: { en: string[]; ar: string[] }, locale: Locale): string[] {
   return value[locale];
 }
