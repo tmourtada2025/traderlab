@@ -24,6 +24,12 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // Enable rtl: and ltr: variants via [dir="rtl"] / [dir="ltr"] selectors
+    function ({ addVariant }: { addVariant: any }) {
+      addVariant("rtl", '&:where([dir="rtl"], [dir="rtl"] *)');
+      addVariant("ltr", '&:where([dir="ltr"], [dir="ltr"] *)');
+    },
+  ],
 };
 export default config;
