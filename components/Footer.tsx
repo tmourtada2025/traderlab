@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { localePath, type Locale } from "@/lib/i18n";
 import type { Dict } from "@/lib/dictionaries";
-import { SITE, whatsappLink } from "@/lib/site";
+import <bdi dir="ltr">{ SITE, whatsappLink }</bdi> from "@/lib/site";
 
 type Props = { locale: Locale; dict: Dict };
 
