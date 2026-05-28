@@ -2,7 +2,7 @@
 
 export const SITE = {
   name: "TraderLab",
-  whatsappNumber: "96134224498", // E.164 without "+"
+  whatsappNumber: "9613422498", // E.164 without "+"
   whatsappDisplay: "+961 3 422 498",
   scheduleShort: "MWF · 18:00–20:00 GMT+3",
 };
